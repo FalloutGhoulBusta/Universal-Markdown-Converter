@@ -3,7 +3,7 @@
 A comprehensive GUI application for converting Markdown files to HTML and PDF formats with professional styling and advanced features.
 
 ![Python](https://img.shields.io/badge/python-3.7+-blue.svg)
-![Platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-lightgrey.svg)
+![Platform](https://img.shields.io/badge/platform-windows-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ## ✨ Features
@@ -14,12 +14,18 @@ A comprehensive GUI application for converting Markdown files to HTML and PDF fo
 - 🎨 **Professional styling** - Beautiful CSS with tables, code blocks, and more
 - 📑 **Multiple formats** - Export to HTML or PDF
 - 🚫 **Header removal option** - Remove auto-generated headers like "Generated on..."
-- 🌐 **Cross-platform** - Works on Windows, macOS, and Linux
-- 📦 **Portable** - Can be built as standalone Windows executable
+- 💨 **Custom icon** - Features the smoke.png icon for a unique look
+- 📦 **Portable Windows executable** - Standalone .exe file, no Python required
 
 ## 🚀 Quick Start
 
-### Option 1: Run Python Script
+### Option 1: Download Windows Executable
+1. Go to [Releases](../../releases)
+2. Download the latest `Universal-Markdown-Converter-vX.X.X-Windows.zip`
+3. Extract and run `Universal_Markdown_Converter.exe`
+4. No Python installation required!
+
+### Option 2: Run Python Script (Windows)
 ```bash
 # Install dependencies
 pip install -r requirements.txt
@@ -28,7 +34,7 @@ pip install -r requirements.txt
 python universal_md_converter.py
 ```
 
-### Option 2: Build Windows Executable
+### Option 3: Build Windows Executable Yourself
 ```bash
 # Double-click to build (Windows)
 BUILD_EXE.bat
@@ -39,6 +45,12 @@ BUILD_EXE.bat
 
 ## 📋 Requirements
 
+### For Windows Executable (Recommended)
+- Windows 10 or higher
+- Chrome/Chromium browser (for PDF conversion)
+
+### For Python Script
+- Windows 10 or higher
 - Python 3.7 or higher
 - tkinter (usually included with Python)
 - markdown library (auto-installed)
@@ -73,6 +85,19 @@ For users who want a standalone Windows application:
 
 See [BUILD_WINDOWS_APP.md](BUILD_WINDOWS_APP.md) for detailed instructions.
 
+## 🤖 Automated Builds
+
+This repository includes GitHub Actions workflows for automated building:
+
+- **🏗️ Release Builds**: Automatically triggered when you create a version tag (e.g., `v1.0.0`)
+- **🧪 Test Builds**: Run on every push to validate the code
+- **📦 Windows Executables**: Built with the smoke.png icon and uploaded as release assets
+
+To create a new release:
+1. Tag your commit: `git tag v1.0.0`
+2. Push the tag: `git push origin v1.0.0`
+3. GitHub Actions will automatically build and create a release!
+
 ## 📁 Project Structure
 
 ```
@@ -80,9 +105,10 @@ universal-markdown-converter/
 ├── universal_md_converter.py      # Main application
 ├── requirements.txt               # Python dependencies
 ├── universal_md_converter.spec    # PyInstaller configuration
-├── BUILD_EXE.bat                 # Simple build script
+├── BUILD_EXE.bat                 # Simple Windows build script
 ├── build_windows_app.ps1         # PowerShell build script
-├── create_icon.py                # Icon generator
+├── create_icon.py                # Icon generator (converts smoke.png)
+├── smoke.png                     # Application icon source
 ├── BUILD_WINDOWS_APP.md          # Build instructions
 └── README.md                     # This file
 ```
@@ -126,7 +152,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 If you encounter any issues or have feature requests:
 1. Check existing issues on GitHub
 2. Create a new issue with detailed description
-3. Include your Python version and OS
+3. Include your Windows version and whether you're using the executable or Python script
+4. For executable issues, mention if Chrome/Chromium is installed
 
 ## 🙏 Acknowledgments
 
