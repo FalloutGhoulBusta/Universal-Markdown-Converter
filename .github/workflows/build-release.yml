@@ -26,11 +26,21 @@ jobs:
 
     - name: Create application icon
       run: |
+        echo "Creating application icon..."
         python create_icon.py
+        if (Test-Path "icon.ico") {
+          echo "✅ Icon created successfully: icon.ico"
+          $iconInfo = Get-Item "icon.ico"
+          echo "Icon size: $($iconInfo.Length) bytes"
+        } else {
+          echo "⚠️ Warning: icon.ico not created, executable will use default icon"
+        }
 
     - name: Create PyInstaller spec file
       run: |
-        echo "# -*- mode: python ; coding: utf-8 -*-
+        @"
+        # -*- mode: python ; coding: utf-8 -*-
+        import os
 
         block_cipher = None
 
@@ -85,11 +95,32 @@ jobs:
             codesign_identity=None,
             entitlements_file=None,
             icon='icon.ico' if os.path.exists('icon.ico') else None
-        )" > universal_md_converter.spec
+        )
+        "@ | Out-File -FilePath "universal_md_converter.spec" -Encoding UTF8
 
     - name: Build executable
       run: |
-        pyinstaller --clean universal_md_converter.spec
+        echo "Building executable with PyInstaller..."
+        pyinstaller --clean --noconfirm universal_md_converter.spec
+        echo "Build completed. Checking output..."
+
+    - name: Verify build output
+      run: |
+        if (-Not (Test-Path "dist\Universal_Markdown_Converter.exe")) {
+          echo "❌ Error: Executable not found at dist\Universal_Markdown_Converter.exe"
+          echo "Build step likely failed. Checking dist directory contents:"
+          if (Test-Path "dist") {
+            Get-ChildItem -Path "dist" -Recurse
+          } else {
+            echo "dist directory does not exist"
+          }
+          exit 1
+        } else {
+          echo "✅ Executable found: dist\Universal_Markdown_Converter.exe"
+          $fileInfo = Get-Item "dist\Universal_Markdown_Converter.exe"
+          echo "File size: $($fileInfo.Length) bytes"
+          echo "Created: $($fileInfo.CreationTime)"
+        }
 
     - name: Get version from tag
       id: get_version
@@ -105,7 +136,23 @@ jobs:
       run: |
         $version = "${{ steps.get_version.outputs.version }}"
         $archiveName = "Universal-Markdown-Converter-$version-Windows.zip"
-        Compress-Archive -Path "dist\Universal_Markdown_Converter.exe" -DestinationPath $archiveName
+        echo "Creating release archive: $archiveName"
+
+        # Verify the executable exists before archiving
+        if (-Not (Test-Path "dist\Universal_Markdown_Converter.exe")) {
+          echo "❌ Error: Cannot create archive - executable not found"
+          exit 1
+        }
+
+        Compress-Archive -Path "dist\Universal_Markdown_Converter.exe" -DestinationPath $archiveName -Force
+        echo "✅ Archive created: $archiveName"
+
+        # Verify archive was created
+        if (Test-Path $archiveName) {
+          $archiveInfo = Get-Item $archiveName
+          echo "Archive size: $($archiveInfo.Length) bytes"
+        }
+
         echo "archive_name=$archiveName" >> $env:GITHUB_OUTPUT
       id: create_archive
 
