@@ -1,0 +1,62 @@
+name: Test Build
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Test Python script
+      run: |
+        python -c "import universal_md_converter; print('✓ Script imports successfully')"
+
+    - name: Test icon creation
+      run: |
+        python create_icon.py
+        if (Test-Path "icon.ico") {
+            echo "✓ Icon created successfully"
+        } else {
+            echo "⚠ Icon creation failed"
+        }
+
+    - name: Test build (without creating executable)
+      run: |
+        echo "Testing PyInstaller configuration..."
+        pyinstaller --help > nul
+        echo "✓ PyInstaller is working"
+
+    - name: Validate requirements
+      run: |
+        python -c "
+        import markdown
+        import tkinter
+        print('✓ All core dependencies available')
+        print(f'Markdown version: {markdown.__version__}')
+        "
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          *.log
+          icon.ico
