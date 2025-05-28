@@ -1,2 +1,6 @@
+# Core dependencies
 markdown>=3.4.0
+
+# Build dependencies
 pyinstaller>=5.0.0
+Pillow>=8.0.0

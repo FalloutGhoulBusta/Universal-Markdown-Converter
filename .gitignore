@@ -5,6 +5,7 @@ dist/
 
 # Generated files
 icon.ico
+smoke.png  # Remove this line if you want to commit your custom icon
 
 # Python
 __pycache__/
